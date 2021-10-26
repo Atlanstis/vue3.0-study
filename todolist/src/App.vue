@@ -12,16 +12,21 @@
       />
     </header>
     <section class="main">
-      <input id="toggle-all" class="toggle-all" type="checkbox" />
+      <input
+        v-model="allDone"
+        id="toggle-all"
+        class="toggle-all"
+        type="checkbox"
+      />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         <li
           v-for="(todo, index) of todos"
           :key="index"
-          :class="{ editing: todo._editing }"
+          :class="{ editing: todo._editing, completed: todo.completed }"
         >
           <div class="view">
-            <input class="toggle" type="checkbox" />
+            <input v-model="todo.completed" class="toggle" type="checkbox" />
             <label @dblclick="editTodo(todo)">{{ todo.text }}</label>
             <button class="destroy" @click="removeTodo(todo, index)"></button>
           </div>
@@ -59,7 +64,7 @@
 
 <script>
 import './assets/index.css'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 // 添加待办事项
 const useAdd = (todos) => {
@@ -125,6 +130,25 @@ const useEdit = (removeTodo) => {
   }
 }
 
+// 切换待办事项完成状态
+const useFilter = (todos) => {
+  const allDone = computed({
+    get: () => {
+      return !todos.value.filter((todo) => {
+        return !todo.completed
+      }).length
+    },
+    set: (value) => {
+      todos.value.forEach((todo) => {
+        todo.completed = value
+      })
+    }
+  })
+  return {
+    allDone
+  }
+}
+
 export default {
   name: 'Todos',
 
@@ -135,7 +159,8 @@ export default {
       todos,
       ...useAdd(todos),
       removeTodo,
-      ...useEdit(removeTodo)
+      ...useEdit(removeTodo),
+      ...useFilter(todos)
     }
   },
 
