@@ -11,7 +11,7 @@
         @keyup.enter="addTodo"
       />
     </header>
-    <section class="main">
+    <section v-show="count" class="main">
       <input
         v-model="allDone"
         id="toggle-all"
@@ -42,17 +42,21 @@
         </li>
       </ul>
     </section>
-    <footer class="footer">
+    <footer v-show="count" class="footer">
       <span class="todo-count">
-        <strong>10</strong>
-        items left
+        <strong>{{ remainingCount }}</strong>
+        {{ remainingCount > 1 ? 'items' : 'item' }} left
       </span>
       <ul class="filters">
         <li><a href="#/all">All</a></li>
         <li><a href="#/active">Active</a></li>
         <li><a href="#/completed">Completed</a></li>
       </ul>
-      <button class="clear-completed">
+      <button
+        v-show="count > remainingCount"
+        @click="removeComplted"
+        class="clear-completed"
+      >
         Clear completed
       </button>
     </footer>
@@ -92,7 +96,12 @@ const useRemove = (todos) => {
   const removeTodo = (index) => {
     todos.value.splice(index, 1)
   }
-  return { removeTodo }
+
+  const removeComplted = () => {
+    todos.value = todos.value.filter((todo) => !todo.completed)
+  }
+
+  return { removeTodo, removeComplted }
 }
 
 // 编辑待办事项
@@ -146,8 +155,9 @@ const useFilter = (todos) => {
   })
 
   const type = ref('all')
-
   const filteredTodos = computed(() => filter[type.value](todos.value))
+  const remainingCount = computed(() => filter.active(todos.value).length)
+  const count = computed(() => todos.value.length)
 
   const filter = {
     all: (list) => list,
@@ -155,6 +165,7 @@ const useFilter = (todos) => {
     completed: (list) => list.filter((todo) => todo.completed)
   }
 
+  // 监听 hash 变化，切换显示数据
   const onHashChange = () => {
     const hash = window.location.hash.replace('#/', '')
     if (filter[hash]) {
@@ -176,7 +187,9 @@ const useFilter = (todos) => {
 
   return {
     allDone,
-    filteredTodos
+    filteredTodos,
+    remainingCount,
+    count
   }
 }
 
@@ -185,11 +198,12 @@ export default {
 
   setup() {
     const todos = ref([])
-    const { removeTodo } = useRemove(todos)
+    const { removeTodo, removeComplted } = useRemove(todos)
     return {
       todos,
       ...useAdd(todos),
       removeTodo,
+      removeComplted,
       ...useEdit(removeTodo),
       ...useFilter(todos)
     }
