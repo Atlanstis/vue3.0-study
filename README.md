@@ -11,19 +11,19 @@
 
 ```
 package 目录结构
-|-- compiler-core				与平台无关的的编译器
-|-- compiler-dom				浏览器环境下的编译器，依赖于 compiler-core
-|-- compiler-sfc				编译单文件组件，依赖于 compiler-dom 与 compiler-core
-|-- compiler-ssr				服务端渲染编译器，依赖于 compiler-dom
-|-- reactivity					数据响应式系统
-|-- runtime-core				与平台无关的运行时
-|-- runtime-dom					与浏览器相关的运行时，处理原生 DOM API，事件等
-|-- runtime-test				为测试编写的运行时
-|-- server-renderer			用于服务器渲染
-|-- shared							Vue 内部使用的公共 API
-|-- size-check					私有，tree shaking 后，检查包的大小
-|-- template-explorer		浏览器环境里运行的实时编译组件，输出 render 函数
-|-- vue									构建完整版的 vue
+|-- compiler-core       与平台无关的的编译器
+|-- compiler-dom        浏览器环境下的编译器，依赖于 compiler-core
+|-- compiler-sfc        编译单文件组件，依赖于 compiler-dom 与 compiler-core
+|-- compiler-ssr        服务端渲染编译器，依赖于 compiler-dom
+|-- reactivity          数据响应式系统
+|-- runtime-core        与平台无关的运行时
+|-- runtime-dom         与浏览器相关的运行时，处理原生 DOM API，事件等
+|-- runtime-test        为测试编写的运行时
+|-- server-renderer     用于服务器渲染
+|-- shared              Vue 内部使用的公共 API
+|-- size-check          私有，tree shaking 后，检查包的大小
+|-- template-explorer   浏览器环境里运行的实时编译组件，输出 render 函数
+|-- vue                 构建完整版的 vue
 ```
 
 ### Composition API
@@ -74,3 +74,5 @@ package 目录结构
 - 快速冷启动
 - 按需编译
 - 模块热更新
+
+## Composition API
