@@ -15,13 +15,24 @@
       <input id="toggle-all" class="toggle-all" type="checkbox" />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
-        <li v-for="(todo, index) of todos" :key="index">
+        <li
+          v-for="(todo, index) of todos"
+          :key="index"
+          :class="{ editing: todo._editing }"
+        >
           <div class="view">
             <input class="toggle" type="checkbox" />
-            <label>{{ todo.text }}</label>
-            <button class="destroy" @click="removeTodo(index)"></button>
+            <label @dblclick="editTodo(todo)">{{ todo.text }}</label>
+            <button class="destroy" @click="removeTodo(todo, index)"></button>
           </div>
-          <input class="edit" type="text" />
+          <input
+            v-model="todo.text"
+            class="edit"
+            type="text"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.esc="cancelEdit(todo)"
+            @blur="doneEdit(todo)"
+          />
         </li>
       </ul>
     </section>
@@ -58,7 +69,8 @@ const useAdd = (todos) => {
     if (text.length) {
       todos.value.unshift({
         text,
-        completed: false
+        completed: false,
+        _editing: false
       })
     }
     input.value = ''
@@ -77,16 +89,52 @@ const useRemove = (todos) => {
   return { removeTodo }
 }
 
+// 编辑待办事项
+const useEdit = (removeTodo) => {
+  let beforeEditText = ''
+
+  // 开始编辑
+  const editTodo = (todo) => {
+    beforeEditText = todo.text
+    todo._editing = true
+  }
+
+  // 编辑完成
+  const doneEdit = (todo, index) => {
+    if (todo._editing) {
+      todo._editing = false
+      todo.text = todo.text.trim()
+      if (!todo.text) {
+        removeTodo(index)
+      }
+    }
+  }
+  // 取消编辑
+  const cancelEdit = (todo) => {
+    if (todo._editing) {
+      todo.text = beforeEditText
+      todo._editing = false
+    }
+  }
+
+  return {
+    editTodo,
+    doneEdit,
+    cancelEdit
+  }
+}
+
 export default {
   name: 'Todos',
 
   setup() {
     const todos = ref([])
-
+    const { removeTodo } = useRemove(todos)
     return {
       todos,
       ...useAdd(todos),
-      ...useRemove(todos)
+      removeTodo,
+      ...useEdit(removeTodo)
     }
   }
 }
