@@ -27,6 +27,7 @@
           </div>
           <input
             v-model="todo.text"
+            v-editing-focus="todo._editing"
             class="edit"
             type="text"
             @keyup.enter="doneEdit(todo)"
@@ -135,6 +136,12 @@ export default {
       ...useAdd(todos),
       removeTodo,
       ...useEdit(removeTodo)
+    }
+  },
+
+  directives: {
+    editingFocus: (el, binding) => {
+      binding.value && el.focus()
     }
   }
 }
