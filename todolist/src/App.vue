@@ -21,8 +21,8 @@
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         <li
-          v-for="(todo, index) of todos"
-          :key="index"
+          v-for="(todo, index) of filteredTodos"
+          :key="todo"
           :class="{ editing: todo._editing, completed: todo.completed }"
         >
           <div class="view">
@@ -64,7 +64,7 @@
 
 <script>
 import './assets/index.css'
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 // 添加待办事项
 const useAdd = (todos) => {
@@ -144,8 +144,39 @@ const useFilter = (todos) => {
       })
     }
   })
+
+  const type = ref('all')
+
+  const filteredTodos = computed(() => filter[type.value](todos.value))
+
+  const filter = {
+    all: (list) => list,
+    active: (list) => list.filter((todo) => !todo.completed),
+    completed: (list) => list.filter((todo) => todo.completed)
+  }
+
+  const onHashChange = () => {
+    const hash = window.location.hash.replace('#/', '')
+    if (filter[hash]) {
+      type.value = hash
+    } else {
+      type.value = 'all'
+      window.location.hash = ''
+    }
+  }
+
+  onMounted(() => {
+    window.addEventListener('hashchange', onHashChange)
+    onHashChange()
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('hashchange', onHashChange)
+  })
+
   return {
-    allDone
+    allDone,
+    filteredTodos
   }
 }
 
