@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>reactive 实现</title>
+  </head>
+  <body>
+    <script type="module">
+      import { reactive, effect } from './reactivity/index.js'
+
+      const obj = reactive({
+        name: 'foo',
+        age: 19
+      })
+
+      const say = () => {
+        let str = `my name is ${obj.name}`
+        if (obj.age) {
+          str += `, age is ${obj.age}`
+        }
+        console.log(str)
+        console.log(obj)
+      }
+      effect(say)
+      obj.name = 'zoo'
+      obj.age = '44'
+      delete obj.age
+
+      obj.age = '333'
+      obj.xxx = 'xxx'
+    </script>
+  </body>
+</html>
