@@ -97,3 +97,11 @@ package 目录结构
 - 接受一个参数，判断这参数是否为对象（只能为对象）
 - 创建拦截器对象 handler，设置 get/set/deleteProperty
 - 返回 Proxy 对象
+
+#### reactive vs ref
+
+- ref 可以把基本数据类型数据，转成响应式对象
+- ref 返回的对象，重新赋值成对象也是响应式的
+- reactive 返回的对象，重新赋值会丢失响应式特性
+- reactive 返回的对象不可以解构
+

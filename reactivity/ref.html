@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ref 实现</title>
+  </head>
+  <body>
+    <script type="module">
+      import { effect, ref } from './reactivity/index.js'
+
+      const obj = ref({
+        name: 'foo',
+        age: 19
+      })
+
+      const say = () => {
+        let str = `my name is ${obj.value.name}`
+        if (obj.value.age) {
+          str += `, age is ${obj.value.age}`
+        }
+        console.log(str)
+      }
+      effect(say)
+      obj.value.name = 'zoo'
+      obj.value.age = '44'
+      delete obj.value.age
+
+      obj.value.age = '333'
+    </script>
+  </body>
+</html>
