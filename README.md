@@ -105,3 +105,7 @@ package 目录结构
 - reactive 返回的对象，重新赋值会丢失响应式特性
 - reactive 返回的对象不可以解构
 
+#### toRefs
+
+- 将 reactive 创建的对象，转换成 ref 创建的对象
+
