@@ -121,3 +121,13 @@ function toProxyRef(proxy, key) {
   }
   return r
 }
+
+export function computed(getter) {
+  const result = ref()
+
+  effect(() => {
+    result.value = getter()
+  })
+
+  return result
+}
